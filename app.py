@@ -2,22 +2,50 @@ import streamlit as st
 import os
 from dotenv import load_dotenv
 from groq import Groq
+import PyPDF2
+import io
 
 load_dotenv()
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
-st.title("AI Resume Screener")
-st.write("Paste a Job Description and your Resume below to see how well they match.")
+# Page config
+st.set_page_config(page_title="AI Resume Screener", page_icon="📄", layout="centered")
 
-jd = st.text_area("Job Description", height=200, placeholder="Paste the job description here...")
-resume = st.text_area("Your Resume", height=200, placeholder="Paste your resume here...")
+# Header
+st.markdown("<h1 style='text-align: center;'>📄 AI Resume Screener</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: gray;'>Paste or upload your resume and a job description to see how well you match.</p>", unsafe_allow_html=True)
+st.divider()
 
-if st.button("Screen Resume"):
-    if not jd or not resume:
-        st.warning("Please fill in both fields.")
+# Job Description
+st.markdown("### 📋 Job Description")
+jd = st.text_area("", height=200, placeholder="Paste the job description here...")
+
+# Resume
+st.markdown("### 👤 Your Resume")
+resume_option = st.radio("Choose input method:", ["Paste Text", "Upload PDF"], horizontal=True)
+
+resume_text = ""
+
+if resume_option == "Paste Text":
+    resume_text = st.text_area("", height=200, placeholder="Paste your resume here...")
+
+elif resume_option == "Upload PDF":
+    uploaded_file = st.file_uploader("Upload your resume as PDF", type=["pdf"])
+    if uploaded_file is not None:
+        pdf_reader = PyPDF2.PdfReader(io.BytesIO(uploaded_file.read()))
+        for page in pdf_reader.pages:
+            resume_text += page.extract_text()
+        st.success("PDF uploaded and extracted successfully.")
+
+st.divider()
+
+# Button
+if st.button("🔍 Screen My Resume", use_container_width=True):
+    if not jd or not resume_text:
+        st.warning("Please fill in both the job description and your resume.")
     else:
-        with st.spinner("Analyzing..."):    
+        with st.spinner("Analyzing your resume..."):
             prompt = f"""
             You are an expert recruiter and resume screener.
             
@@ -31,7 +59,7 @@ if st.button("Screen Resume"):
             {jd}
             
             Resume:
-            {resume}
+            {resume_text}
             """
 
             response = client.chat.completions.create(
@@ -41,5 +69,8 @@ if st.button("Screen Resume"):
                 ]
             )
 
-            st.success("Analysis Complete")
-            st.write(response.choices[0].message.content)
+            result = response.choices[0].message.content
+
+        st.divider()
+        st.markdown("### 📊 Analysis Result")
+        st.markdown(result)
