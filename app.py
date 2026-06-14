@@ -11,7 +11,7 @@ load_dotenv()
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 # Page config
-st.set_page_config(page_title="AI Resume Screener", page_icon="📄", layout="centered")
+st.set_page_config(page_title="AI Resume Screener", page_icon="", layout="centered")
 
 # Custom CSS
 st.markdown("""
@@ -155,11 +155,11 @@ st.markdown("""
 st.divider()
 
 # Job Description
-st.markdown('<p class="section-label">📋 Job Description</p>', unsafe_allow_html=True)
+st.markdown('<p class="section-label">Job Description</p>', unsafe_allow_html=True)
 jd = st.text_area("", height=180, placeholder="Paste the job description here...", key="jd")
 
 # Resume
-st.markdown('<p class="section-label">👤 Your Resume</p>', unsafe_allow_html=True)
+st.markdown('<p class="section-label"> Your Resume</p>', unsafe_allow_html=True)
 resume_option = st.radio("Input method:", ["Paste Text", "Upload PDF"], horizontal=True)
 
 resume_text = ""
@@ -288,12 +288,12 @@ if st.button("🔍 Screen My Resume", use_container_width=True):
 
         # Analysis
         st.markdown('<div class="card">', unsafe_allow_html=True)
-        st.markdown("### 📊 Detailed Analysis")
+        st.markdown("Detailed Analysis")
         st.markdown(result)
         st.markdown('</div>', unsafe_allow_html=True)
 
         # Keyword match
-        st.markdown("### 🔑 Keyword Match Analysis")
+        st.markdown("Keyword Match Analysis")
 
         if keywords:
             match_pct = int(len(matched) / len(keywords) * 100)
@@ -310,7 +310,7 @@ if st.button("🔍 Screen My Resume", use_container_width=True):
         col1, col2 = st.columns(2)
 
         with col1:
-            st.markdown("#### ✅ Matched Keywords")
+            st.markdown("Matched Keywords")
             if matched:
                 pills = "".join([f'<span class="keyword-matched">{k}</span>' for k in matched])
                 st.markdown(f'<div class="card">{pills}</div>', unsafe_allow_html=True)
@@ -318,7 +318,7 @@ if st.button("🔍 Screen My Resume", use_container_width=True):
                 st.info("No keywords matched.")
 
         with col2:
-            st.markdown("#### ❌ Missing Keywords")
+            st.markdown("Missing Keywords")
             if missing:
                 pills = "".join([f'<span class="keyword-missing">{k}</span>' for k in missing])
                 st.markdown(f'<div class="card">{pills}</div>', unsafe_allow_html=True)
