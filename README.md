@@ -6,7 +6,7 @@ An AI-powered resume screening tool that analyzes how well your resume matches a
 
 ## Live Demo
 
-> Run locally using the steps below.
+> Live at: https://resumeter.streamlit.app
 
 ---
 
