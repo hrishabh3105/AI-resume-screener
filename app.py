@@ -11,7 +11,7 @@ load_dotenv()
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 # Page config
-st.set_page_config(page_title="AI Resume Screener", page_icon="", layout="centered")
+st.set_page_config(page_title="ResuMeter", page_icon="", layout="centered")
 
 # Custom CSS
 st.markdown("""
